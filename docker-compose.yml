@@ -1,0 +1,68 @@
+version: '3'
+
+services:
+  frontend:
+    build:
+      context: ./pokeGuide_f
+    container_name: frontend
+    restart: unless-stopped
+    ports:
+      - "3000:3000"  # 프론트엔드가 사용하는 포트
+    environment:
+      - FRONTEND_URL=http://3.34.158.6  # 애플리케이션의 front.url과 일치
+
+  backend:
+    build:
+      context: ./pokeGuide
+    container_name: backend
+    restart: unless-stopped
+    ports:
+      - "8080:8080"  # 백엔드가 사용하는 포트
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://database:3306/pokeguide  # 데이터베이스 URL
+      - SPRING_DATASOURCE_USERNAME=poke  # 데이터베이스 사용자명
+      - SPRING_DATASOURCE_PASSWORD=Abcd1234!  # 데이터베이스 비밀번호
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=none  # Hibernate DDL 설정
+      - SPRING_JPA_PROPERTIES_HIBERNATE_FORMAT_SQL=true  # SQL 포맷
+      - SPRING_JPA_PROPERTIES_HIBERNATE_SHOW_SQL=true  # SQL 로그 출력
+      - SPRING_SESSION_STORE_TYPE=redis  # 세션 저장소
+      - SPRING_REDIS_HOST=redis  # Redis 호스트 (서비스 이름으로 사용)
+      - SPRING_REDIS_PORT=6379  # Redis 포트
+      - SPRING_MAIL_HOST=smtp.gmail.com  # 메일 호스트
+      - SPRING_MAIL_PORT=587  # 메일 포트
+      - SPRING_MAIL_USERNAME=oharam0413@gmail.com  # 메일 사용자명
+      - SPRING_MAIL_PASSWORD=xwov wdxm kafb vhun  # 메일 비밀번호
+      - SPRING_MAIL_PROPERTIES_MAIL_SMTP_AUTH=true  # 메일 SMTP 인증
+      - SPRING_MAIL_PROPERTIES_MAIL_SMTP_TIMEOUT=5000  # 메일 타임아웃
+      - SPRING_MAIL_PROPERTIES_MAIL_SMTP_STARTTLS_ENABLE=true  # SMTP STARTTLS
+
+  nginx:
+    build:
+      context: ./nginx
+    container_name: nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+
+  database:
+    image: mysql:latest
+    container_name: database
+    restart: unless-stopped
+    environment:
+      - MYSQL_ROOT_PASSWORD=qwerP1!@
+      - MYSQL_DATABASE=pokeguide  # 데이터베이스 이름
+      - MYSQL_USER=poke  # 데이터베이스 사용자명
+      - MYSQL_PASSWORD=Abcd1234!  # 데이터베이스 비밀번호
+    volumes:
+      - db_data:/var/lib/mysql
+
+  redis:
+    image: redis:latest
+    container_name: redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"  # Redis 포트
+
+volumes:
+  db_data:
+

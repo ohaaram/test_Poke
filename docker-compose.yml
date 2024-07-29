@@ -3,7 +3,7 @@ version: '3'
 services:
   frontend:
     build:
-      context: ./pokeGuide_f
+      context: ./frontend
     container_name: frontend
     restart: unless-stopped
     ports:
@@ -13,7 +13,7 @@ services:
 
   backend:
     build:
-      context: ./pokeGuide
+      context: ./backend
     container_name: backend
     restart: unless-stopped
     ports:
